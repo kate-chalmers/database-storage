@@ -19,4 +19,7 @@ Imports:
   janitor,
   haven,
   dplyr,
-  tidyr
+  tidyr,
+  WDI,
+  readxl,
+  jsonlite
