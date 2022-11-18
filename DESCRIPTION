@@ -1,12 +1,22 @@
-Package: database.query
-Title: CDS Database Collection
+Package: cdsDownload
+Title: Database Collection CDS Unit
 Version: 0.0.0.9000
 Authors@R: 
-    person("Kate", "Chalmers", , "kategchalmers@gmail.com", role = c("aut", "cre"),
+    person("Kate", "Chalmers", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: This package downloads data from a variety of sources and formats them for use in a number of different processes commonly undertaken in CDS.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
+Imports: 
+  tidyverse,
+  data.table,
+  openxlsx,
+  countrycode,
+  rsdmx,
+  janitor,
+  haven,
+  dplyr,
+  tidyr
