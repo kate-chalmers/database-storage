@@ -7,6 +7,7 @@ library(haven)
 library(dplyr)
 library(magrittr)
 library(tidyr)
+library(tibble)
 
 # questions -----
 
