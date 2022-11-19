@@ -22,4 +22,6 @@ Imports:
   WDI,
   readxl,
   magrittr,
+  tidyverse,
+  tidyr,
   jsonlite
