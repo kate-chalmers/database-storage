@@ -27,6 +27,16 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
       - uses: r-lib/actions/setup-pandoc@v2
+      
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          extra-packages: |
+            any::ggplot2
+            any::rcmdcheck
+          needs: |
+            website
+            coverage
 
       - name: Query dependencies
         run: |
