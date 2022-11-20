@@ -16,6 +16,7 @@ library(readr)
 # Household from 2010 USD -> 2015 US$ (same with pop)
 # safely managed sanitation -> improved (this is debatable and could be automated potentially)
 # School enrollment, secdonary (NET)
+
 # Feeling about household income: which feeling?
 
 # WDI pull -----
