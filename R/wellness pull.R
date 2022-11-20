@@ -341,7 +341,6 @@ wellness_tidy <- wellness_dat %>%
   arrange(indicator_code, country, year)
 
 # openxlsx::write.xlsx(wellness_tidy, "wellness_dat_raw_18nov.xlsx")
+# save(wellness_tidy, file = paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".csv"))
 
-save(wellness_tidy, file = paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".csv"))
-
-
+write_csv(wellness_tidy, paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".csv"))
