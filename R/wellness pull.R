@@ -16,7 +16,6 @@ library(readr)
 # Household from 2010 USD -> 2015 US$ (same with pop)
 # safely managed sanitation -> improved (this is debatable and could be automated potentially)
 # School enrollment, secdonary (NET)
-
 # Feeling about household income: which feeling?
 
 # WDI pull -----
@@ -343,6 +342,6 @@ wellness_tidy <- wellness_dat %>%
 
 # openxlsx::write.xlsx(wellness_tidy, "wellness_dat_raw_18nov.xlsx")
 
-save(wellness_tidy, file = paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".Rda"))
+save(wellness_tidy, file = paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".csv"))
 
 
