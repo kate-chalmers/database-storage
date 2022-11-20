@@ -8,6 +8,7 @@ library(dplyr)
 library(magrittr)
 library(tidyr)
 library(tibble)
+library(readr)
 
 # questions -----
 
@@ -41,14 +42,13 @@ wdi_tidy <- wdi_dat %>%
   drop_na(value) %>%
   mutate(source = "WDI") %>%
   rename("indicator_code2" = "indicator_code") %>%
-  merge(., code_dict, by="indicator_code2") %>%
+  left_join(., code_dict, by="indicator_code2") %>%
   mutate(indicator =
            case_when(
              indicator == "School enrollment, secondary (% net)" ~ "School enrollment, secondary (NET)",
              TRUE ~ indicator
            ))
 
-colnames(wdi_tidy)
 
 # OECD pull -----
 

@@ -22,6 +22,7 @@ Imports:
   WDI,
   readxl,
   magrittr,
+  readr,
   tidyverse,
   tidyr,
   tibble,
