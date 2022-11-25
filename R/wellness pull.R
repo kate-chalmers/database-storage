@@ -1,5 +1,4 @@
 library(data.table)
-library(openxlsx)
 library(countrycode)
 library(rsdmx)
 library(janitor)
@@ -339,9 +338,6 @@ wellness_tidy <- wellness_dat %>%
   select(indicator_code, indicator_code2, indicator, source, region, subregion, country, iso3c, year, value) %>%
   drop_na(region) %>%
   arrange(indicator_code, country, year)
-
-# openxlsx::write.xlsx(wellness_tidy, "wellness_dat_raw_18nov.xlsx")
-# save(wellness_tidy, file = paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".csv"))
 
 write_csv(wellness_tidy, paste0("data/wellness_database", ".csv"))
 
