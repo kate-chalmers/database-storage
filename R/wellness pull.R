@@ -344,3 +344,7 @@ wellness_tidy <- wellness_dat %>%
 # save(wellness_tidy, file = paste0("data/data_", make.names(Sys.time() %>% format(., format=("%Y-%m-%d"))), ".csv"))
 
 write_csv(wellness_tidy, paste0("data/wellness_database", ".csv"))
+
+# git push -f origin master
+
+
