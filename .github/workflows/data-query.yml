@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 0 1,15 * *"
     
 jobs:
   generate-data:
@@ -67,6 +67,6 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add --all
           git commit -am "add data"
-          git push 
+          git git push -f origin main
           
           
