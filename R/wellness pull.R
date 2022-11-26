@@ -8,6 +8,7 @@ library(magrittr)
 library(tidyr)
 library(tibble)
 library(readr)
+install.packages('stringi')
 
 # questions -----
 
