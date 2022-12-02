@@ -30,6 +30,7 @@ Imports:
   rvest,
   rjson,
   httr,
+  stringi,
   stringr,
   comtradr,
   stringi,

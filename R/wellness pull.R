@@ -1,3 +1,4 @@
+install.packages('stringi')
 library(data.table)
 library(countrycode)
 library(rsdmx)
@@ -9,6 +10,7 @@ library(tidyr)
 library(tibble)
 library(readr)
 library(httr)
+
 
 # questions -----
 
