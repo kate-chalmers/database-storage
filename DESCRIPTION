@@ -31,4 +31,6 @@ Imports:
   rjson,
   httr,
   stringr,
-  comtradr
+  comtradr,
+  stringi,
+  curl

@@ -29,6 +29,7 @@ port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
 rD <- rsDriver(browser="firefox", port=port_num, verbose=F)
 remDr <- rD[["client"]]
 
+
 # Pull currency conversion
 
 currency_convert <- WDI::WDI(indicator="PA.NUS.FCRF", country=c("ATG","GRD","DMA","VCT","LCA","KNA", "MSR", "AIA"))
