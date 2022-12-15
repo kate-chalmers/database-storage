@@ -8,7 +8,7 @@ library(magrittr)
 library(tidyr)
 library(tibble)
 library(readr)
-# library(janitor)
+library(janitor)
 library(countrycode)
 library(comtradr)
 
