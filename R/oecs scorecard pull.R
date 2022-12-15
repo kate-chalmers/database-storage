@@ -26,10 +26,12 @@ current_year <- as.numeric(format(Sys.Date(), format="%Y")) - 1
 end_date <- paste0(current_year, "-12-31")
 
 port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
-rD <- rsDriver(browser="firefox", port=port_num, verbose=F)
+
+pjs <- wdman::phantomjs()
+rD <- remoteDriver(browserName = "phantomjs", port = port_num)
+# rD <- rsDriver(browser="firefox", port=port_num, verbose=F)
 remDr <- rD[["client"]]
 
-remotes::install_deps(build_opts  = c('--no-lock'))
 
 # Pull currency conversion
 
