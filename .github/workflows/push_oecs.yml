@@ -2,6 +2,7 @@ on:
   push
     
 jobs:
+    
   generate-data:
     runs-on: ${{ matrix.config.os }}
 
@@ -51,6 +52,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
+      - name: Install packages
+        run: |
+          R -e 'install.packages("janitor")'
+          
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE, build_opts = c('--no-lock'))
