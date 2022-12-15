@@ -25,8 +25,8 @@ clist_iso2c <- countrycode(clist_avail, "country.name", "iso2c")
 current_year <- as.numeric(format(Sys.Date(), format="%Y")) - 1
 end_date <- paste0(current_year, "-12-31")
 
-port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
-
+# port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
+port_num <- 4444L
 rD <- rsDriver(browser="firefox", port=port_num, verbose=F)
 remDr <- rD[["client"]]
 
@@ -743,8 +743,7 @@ irena_values <- irena_tidy
 # -----------------------
 
 # Close port
-remDr$close()
-system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
+remDr$server$stop()
 
 # Combine data.frames
 
