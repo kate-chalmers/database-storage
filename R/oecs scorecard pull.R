@@ -30,7 +30,6 @@ port_num <- 4445L
 remDrtemp <- remoteDriver()
 rD <- rsDriver(browser=remDrtemp[["browserName"]], port=port_num, verbose=F)
 
-
 # rD <- rsDriver(browser="firefox", port=8007L, verbose=F)
 remDr <- rD[["client"]]
 # remDr <- remoteDriver()
