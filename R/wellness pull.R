@@ -11,7 +11,6 @@ library(tibble)
 library(readr)
 library(httr)
 
-
 # questions -----
 
 # methodology for calc gallup dat, slight variation between previous response
@@ -35,7 +34,7 @@ labs_list <- lapply(wdi_dat, attr, "label")
 labs_list <- labs_list %>% unlist() %>% as.data.frame() %>% rownames_to_column() %>% rename("indicator_code" = 1, "indicator" = 2)
 
 wdi_tidy <- wdi_dat %>%
-  select(-iso2c) %>% #add -iso3c
+  select(-iso2c, -iso3c) %>% #add -iso3c
   pivot_longer(!c(country, year), names_to="indicator_code") %>%
   merge(., labs_list, by="indicator_code") %>%
   mutate(country = countrycode(country, "country.name", "country.name")) %>%
