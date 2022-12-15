@@ -37,10 +37,10 @@ jobs:
           needs: |
             website
             coverage
-
       - name: Query dependencies
         run: |
           install.packages('remotes')
+          install.packages('curl')
           install.packages('sessioninfo')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
@@ -67,6 +67,5 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add --all
           git commit -am "add data"
-          git git push -f origin main
-          
+          git push 
           
