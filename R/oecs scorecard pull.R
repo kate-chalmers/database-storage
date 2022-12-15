@@ -27,11 +27,8 @@ end_date <- paste0(current_year, "-12-31")
 
 port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
 
-pjs <- wdman::phantomjs()
-rD <- remoteDriver(browserName = "phantomjs", port = port_num)
-# rD <- rsDriver(browser="firefox", port=port_num, verbose=F)
+rD <- rsDriver(browser="firefox", port=port_num, verbose=F)
 remDr <- rD[["client"]]
-
 
 # Pull currency conversion
 
