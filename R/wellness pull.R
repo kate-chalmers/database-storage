@@ -1,4 +1,3 @@
-install.packages('stringi')
 library(data.table)
 library(countrycode)
 library(rsdmx)
@@ -24,11 +23,12 @@ library(httr)
 data_wellness_WB <- readxl::read_excel("./data/data_wellness_WB.xlsx", sheet="ALB")
 
 gallup_indic <- data_wellness_WB %>% filter(Source == "Gallup") %>% select(indicator, indicator_code)
-code_dict <- data_wellness_WB %>% select(indicator_code, indicator_code2) %>% drop_na() %>% rbind(., data.frame(indicator_code = "POP", indicator_code2 = "SP.POP.TOTL"))
+code_dict <- data_wellness_WB %>% select(indicator_code, indicator_code2) %>% drop_na() %>% rbind(., data.frame(indicator_code = "POP", indicator_code2 = "SP.POP.TOTL")) %>%
+  rbind(., data.frame(indicator_code = "ENVI2", indicator_code2 = "EN.ATM.PM25.MC.M3"))
 
 wdi_dat <- WDI::WDI(indicator = c("NE.CON.PRVT.PC.KD", "SI.POV.DDAY", "SL.EMP.TOTL.SP.ZS", "SL.UEM.TOTL.ZS", "SL.EMP.VULN.ZS",
                                   "SE.SEC.NENR", "SE.ADT.LITR.ZS", "SP.DYN.LE00.IN", "VC.IHR.PSRC.P5", "per_allsp.cov_pop_tot",
-                                  "SP.POP.TOTL"))
+                                  "SP.POP.TOTL", "EN.ATM.PM25.MC.M3"))
 
 labs_list <- lapply(wdi_dat, attr, "label")
 labs_list <- labs_list %>% unlist() %>% as.data.frame() %>% rownames_to_column() %>% rename("indicator_code" = 1, "indicator" = 2)
@@ -47,25 +47,26 @@ wdi_tidy <- wdi_dat %>%
   mutate(indicator =
            case_when(
              indicator == "School enrollment, secondary (% net)" ~ "School enrollment, secondary (NET)",
+             indicator == "PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)" ~ "Mean population exposure to PM2.5",
              TRUE ~ indicator
            ))
 
 # OECD pull -----
-
-# set_config(use_proxy(url="10.3.100.207",port=8080))
-url <- "https://stats.oecd.org/restsdmx/sdmx.ashx/GetData/EXP_PM2_5/AUS+AUT+BEL+CAN+CHL+COL+CRI+CZE+DNK+EST+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ISR+ITA+JPN+KOR+LVA+LTU+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+SVN+ESP+SWE+CHE+TUR+GBR+USA+EA19+EU28+EU27_2020+G7M+G20+OECDE+OECD+WLD+NMEC+AFG+ALB+DZA+ASM+AND+AGO+AIA+ATG+ARG+ARM+ABW+AZE+BHS+BHR+BGD+BRB+BLR+BLZ+BEN+BMU+BTN+BOL+BIH+BWA+BRA+VGB+BRN+BGR+BFA+BDI+KHM+CMR+CPV+CYM+CAF+TCD+CHN+CXR+CCK+COM+COG+COD+COK+CIV+HRV+CUB+CYP+DJI+DMA+DOM+ECU+EGY+SLV+GNQ+ERI+ETH+FRO+FLK+FJI+PYF+GAB+GMB+GEO+GHA+GIB+GRL+GRD+GUM+GTM+GIN+GNB+GUY+HTI+VAT+HND+HKG+IND+IDN+IRN+IRQ+GGY+IMN+JAM+JEY+JOR+KAZ+KEN+PRK+KIR+KWT+KGZ+LAO+LBN+LSO+LBR+LBY+LIE+MAC+MDG+MWI+MYS+MDV+MLI+MLT+MHL+MRT+MUS+MYT+FSM+MDA+MCO+MNG+MNE+MSR+MAR+MOZ+MMR+NAM+NRU+NPL+ANT+NCL+NIC+NER+MKD+NGA+NIU+NFK+MNP+PSE+OMN+PAK+PLW+PAN+PNG+PRY+PER+PHL+PCN+PRI+QAT+ROU+RUS+RWA+SHN+KNA+LCA+SPM+VCT+WSM+SMR+STP+SAU+SEN+SRB+SYC+SLE+SGP+SLB+SOM+ZAF+LKA+SDN+SUR+SSD+SJM+SWZ+SYR+TWN+TJK+TZA+THA+TLS+TGO+TKL+TON+TTO+TUN+TKM+TCA+TUV+UGA+UKR+ARE+URY+UZB+VUT+VEN+VNM+VIR+WLF+YEM+ZMB+ZWE+GRPS+LAC+MENA+ESH+ASEAN+XXX+BRIICS+OECDAM+OECDAO+EECCA.NA.TOTAL.PWM_EX/all?startTime=1990&endTime=2020"
-
-oecd_dat <- readSDMX(url) %>% as.data.frame()
-
-oecd_tidy <- oecd_dat %>%
-  select(country = COU, year = obsTime, value = obsValue) %>%
-  mutate(country = countrycode(country, "iso3c", "country.name"),
-         indicator = "Mean population exposure to PM2.5",
-         indicator_code2 = NA,
-         indicator_code = "ENVI2",
-         source = "OECD",
-         year = as.numeric(year)) %>%
-  drop_na(country)
+# oecd api is temperamental and hardly works, replacing temporarily with WDI
+# set_config
+# url <- "https://stats.oecd.org/restsdmx/sdmx.ashx/GetData/EXP_PM2_5/AUS+AUT+BEL+CAN+CHL+COL+CRI+CZE+DNK+EST+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ISR+ITA+JPN+KOR+LVA+LTU+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+SVN+ESP+SWE+CHE+TUR+GBR+USA+EA19+EU28+EU27_2020+G7M+G20+OECDE+OECD+WLD+NMEC+AFG+ALB+DZA+ASM+AND+AGO+AIA+ATG+ARG+ARM+ABW+AZE+BHS+BHR+BGD+BRB+BLR+BLZ+BEN+BMU+BTN+BOL+BIH+BWA+BRA+VGB+BRN+BGR+BFA+BDI+KHM+CMR+CPV+CYM+CAF+TCD+CHN+CXR+CCK+COM+COG+COD+COK+CIV+HRV+CUB+CYP+DJI+DMA+DOM+ECU+EGY+SLV+GNQ+ERI+ETH+FRO+FLK+FJI+PYF+GAB+GMB+GEO+GHA+GIB+GRL+GRD+GUM+GTM+GIN+GNB+GUY+HTI+VAT+HND+HKG+IND+IDN+IRN+IRQ+GGY+IMN+JAM+JEY+JOR+KAZ+KEN+PRK+KIR+KWT+KGZ+LAO+LBN+LSO+LBR+LBY+LIE+MAC+MDG+MWI+MYS+MDV+MLI+MLT+MHL+MRT+MUS+MYT+FSM+MDA+MCO+MNG+MNE+MSR+MAR+MOZ+MMR+NAM+NRU+NPL+ANT+NCL+NIC+NER+MKD+NGA+NIU+NFK+MNP+PSE+OMN+PAK+PLW+PAN+PNG+PRY+PER+PHL+PCN+PRI+QAT+ROU+RUS+RWA+SHN+KNA+LCA+SPM+VCT+WSM+SMR+STP+SAU+SEN+SRB+SYC+SLE+SGP+SLB+SOM+ZAF+LKA+SDN+SUR+SSD+SJM+SWZ+SYR+TWN+TJK+TZA+THA+TLS+TGO+TKL+TON+TTO+TUN+TKM+TCA+TUV+UGA+UKR+ARE+URY+UZB+VUT+VEN+VNM+VIR+WLF+YEM+ZMB+ZWE+GRPS+LAC+MENA+ESH+ASEAN+XXX+BRIICS+OECDAM+OECDAO+EECCA.NA.TOTAL.PWM_EX/all?startTime=1990&endTime=2020"
+#
+# oecd_dat <- readSDMX(url) %>% as.data.frame()
+#
+# oecd_tidy <- oecd_dat %>%
+#   select(country = COU, year = obsTime, value = obsValue) %>%
+#   mutate(country = countrycode(country, "iso3c", "country.name"),
+#          indicator = "Mean population exposure to PM2.5",
+#          indicator_code2 = NA,
+#          indicator_code = "ENVI2",
+#          source = "OECD",
+#          year = as.numeric(year)) %>%
+#   drop_na(country)
 
 # WHO pull -----
 
@@ -319,7 +320,7 @@ gallup_ext <- rbind(living_tidy, road_tidy,  opinion_tidy, health_tidy, corrupti
   drop_na(country)
 
 # combine dfs
-wellness_dat <- rbind(wdi_tidy, oecd_tidy, who_tidy, trans_tidy, land_tidy, gallup_tidy, gallup_ext, educ_tidy)
+wellness_dat <- rbind(wdi_tidy, who_tidy, trans_tidy, land_tidy, gallup_tidy, gallup_ext, educ_tidy) # oecd_tidy
 
 # assign lower
 lower_wanted <- c("Poverty headcount ratio at $2.15 a day (2017 PPP) (% of population)",
