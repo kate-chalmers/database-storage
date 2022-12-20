@@ -26,16 +26,8 @@ current_year <- as.numeric(format(Sys.Date(), format="%Y")) - 1
 end_date <- paste0(current_year, "-12-31")
 
 # port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
-# # port_num <- 4445L
-# # remDrtemp <- remoteDriver()
-# rD <- rsDriver(browser="chrome", port=port_num, verbose=F)
-# # rD <- rsDriver(browser="firefox", port=8007L, verbose=F)
-# remDr <- rD[["client"]]
-# # remDr <- remoteDriver()
-#
-# remDr <- remoteDriver(browserName = "phantomjs")
-# remDr$open()
-
+rD <- rsDriver(browser="firefox", port=4445L, verbose=F)
+remDr <- rD[["client"]]
 
 # Pull currency conversion
 
