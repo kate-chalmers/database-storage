@@ -36,7 +36,7 @@ jobs:
           needs: |
             website
             coverage
-      - name: Query dependencies
+      - name: Query dependencies2
         run: |
           install.packages('remotes')
           install.packages('sessioninfo')
