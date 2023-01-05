@@ -11,6 +11,7 @@ library(readr)
 library(janitor)
 library(countrycode)
 library(comtradr)
+library(netstat)
 
 # ------------ Before running ----------------
 # 1. Ensure working directory is same as project directory
@@ -25,13 +26,18 @@ clist_iso2c <- countrycode(clist_avail, "country.name", "iso2c")
 current_year <- as.numeric(format(Sys.Date(), format="%Y")) - 1
 end_date <- paste0(current_year, "-12-31")
 
-# port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
+port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
 
-rD <- rsDriver(browser="firefox")
+# system('docker run -d -p 4449:4444 selenium/standalone-firefox')
+# remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4445L, browserName = "firefox")
+# remDr$open()
+# remDr$navigate("http://www.google.com/ncr")
+# remDr$getTitle()
+
+rD <- rsDriver(browser = "firefox", chromever = NULL, port = netstat::free_port())
 remDr <- rD[["client"]]
 
 # Pull currency conversion
-
 currency_convert <- WDI::WDI(indicator="PA.NUS.FCRF", country=c("ATG","GRD","DMA","VCT","LCA","KNA", "MSR", "AIA"))
 
 currency_convert <- currency_convert %>%
@@ -455,7 +461,7 @@ for(iso2c_input in iso2c) {
     .[-1,] %>%
     mutate(
       var_1 = trimws(var_1, which="left"),
-      var_1 = str_remove(var_1, "' -")) %>%
+      var_1 = stringr::str_remove(var_1, "' -")) %>%
     filter(var_1 %in% c("Agriculture, Livestock and Forestry", "Fishing")) %>%
     rename("category" = "var_1") %>%
     mutate(country = country_name) %>%

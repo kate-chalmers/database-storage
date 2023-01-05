@@ -36,4 +36,5 @@ Imports:
   stringi,
   curl,
   zoo,
+  netstat,
   remotes
