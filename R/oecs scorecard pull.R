@@ -36,10 +36,10 @@ port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
 #
 system("docker pull selenium/standalone-chrome", wait=TRUE)
 Sys.sleep(5)
-system("docker run -d -p 4443:4444 selenium/standalone-chrome", wait=TRUE)
+system("docker run -d -p 4445:4444 selenium/standalone-chrome", wait=TRUE)
 Sys.sleep(5)
 
-remDr <- remoteDriver("localhost", 4443L, "chrome")
+remDr <- remoteDriver("localhost", 4445L, "chrome")
 remDr$open()
 
 # works locally ----
