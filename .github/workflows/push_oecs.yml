@@ -4,7 +4,7 @@ on:
 jobs:
     
   generate-data:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ubuntu-latest
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
