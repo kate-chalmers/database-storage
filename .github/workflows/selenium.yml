@@ -19,7 +19,7 @@ jobs:
     
       - name: Rscript run
         run: |
-          Rscript script.R
+          source("R/script.R")
       - name: Commit results
         run: |
           git config --local user.email "actions@github.com"
