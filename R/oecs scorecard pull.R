@@ -42,6 +42,7 @@ system("docker run -d -p 4445:4444 selenium/standalone-chrome", wait=TRUE)
 Sys.sleep(5)
 
 remDr <- remoteDriver("localhost", 4445L, "chrome")
+remDr$open()
 
 # Pull currency conversion
 currency_convert <- WDI::WDI(indicator="PA.NUS.FCRF", country=c("ATG","GRD","DMA","VCT","LCA","KNA", "MSR", "AIA"))
