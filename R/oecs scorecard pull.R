@@ -28,14 +28,20 @@ end_date <- paste0(current_year, "-12-31")
 
 port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
 
-# system('docker run -d -p 4449:4444 selenium/standalone-firefox')
-# remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4445L, browserName = "firefox")
-# remDr$open()
-# remDr$navigate("http://www.google.com/ncr")
-# remDr$getTitle()
+# # system('docker run -d -p 4449:4444 selenium/standalone-firefox')
+# # remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4445L, browserName = "firefox")
+# # remDr$open()
+# # remDr$navigate("http://www.google.com/ncr")
+# # remDr$getTitle()
+#
+# rD <- rsDriver(browser = "firefox", chromever = NULL, port = netstat::free_port())
+# remDr <- rD[["client"]]
+system("docker pull selenium/standalone-chrome", wait=TRUE)
+Sys.sleep(5)
+system("docker run -d -p 4445:4444 selenium/standalone-chrome", wait=TRUE)
+Sys.sleep(5)
 
-rD <- rsDriver(browser = "firefox", chromever = NULL, port = netstat::free_port())
-remDr <- rD[["client"]]
+remDr <- remoteDriver("localhost", 4445L, "chrome")
 
 # Pull currency conversion
 currency_convert <- WDI::WDI(indicator="PA.NUS.FCRF", country=c("ATG","GRD","DMA","VCT","LCA","KNA", "MSR", "AIA"))
@@ -556,10 +562,10 @@ indic.codes <- c("SP.DYN.IMRT.IN", "SH.STA.OWAD.ZS","SH.MED.BEDS.ZS", "SH.XPD.CH
 vals <- WDI::WDI(indicator = indic.codes, country = clist_iso2c, start=2020, end=(current_year + 1))
 
 labs <- lapply(vals, attr, "label")
-colnames(vals)[4:ncol(vals)] <- c(as.character(labs[c(4:ncol(vals))]))
+colnames(vals)[5:ncol(vals)] <- c(as.character(labs[c(5:ncol(vals))]))
 
 wdi_indicators <- vals %>%
-  pivot_longer(!c(iso2c, country, year), names_to="indicator",
+  pivot_longer(!c(iso2c, iso3c, country, year), names_to="indicator",
                values_to="VALUE") %>%
   mutate(iso3c = countrycode(iso2c, origin="iso2c", destination="iso3c"),
          country = countrycode(iso2c, origin="iso2c", destination="country.name")) %>%
