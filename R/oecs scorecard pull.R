@@ -34,15 +34,18 @@ port_num <- round(runif(1, min=1, max=9999),0) %>% as.integer()
 # # remDr$navigate("http://www.google.com/ncr")
 # # remDr$getTitle()
 #
-# rD <- rsDriver(browser = "firefox", chromever = NULL, port = netstat::free_port())
-# remDr <- rD[["client"]]
 system("docker pull selenium/standalone-chrome", wait=TRUE)
 Sys.sleep(5)
-system("docker run -d -p 4445:4444 selenium/standalone-chrome", wait=TRUE)
+system("docker run -d -p 4443:4444 selenium/standalone-chrome", wait=TRUE)
 Sys.sleep(5)
 
-remDr <- remoteDriver("localhost", 4445L, "chrome")
+remDr <- remoteDriver("localhost", 4443L, "chrome")
 remDr$open()
+
+# works locally ----
+# rD <- rsDriver(browser = "firefox", chromever = NULL, port = netstat::free_port())
+# remDr <- rD[["client"]]
+
 
 # Pull currency conversion
 currency_convert <- WDI::WDI(indicator="PA.NUS.FCRF", country=c("ATG","GRD","DMA","VCT","LCA","KNA", "MSR", "AIA"))
