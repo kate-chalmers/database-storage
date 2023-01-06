@@ -17,6 +17,7 @@ jobs:
           extra-packages: |
             any::ggplot2
             any::rcmdcheck
+            any::RSelenium
           needs: |
             website
             coverage
