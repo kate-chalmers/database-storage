@@ -8,7 +8,6 @@ library(rsdmx)
 library(readxl)
 library(haven)
 library(jsonlite)
-library(oecdcountrycode)
 library(janitor)
 
 start.time <- Sys.time()
