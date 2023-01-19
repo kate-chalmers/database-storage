@@ -8,6 +8,8 @@ Data for the benchmarking database:
 - [ ] Automate EMDAT collection with web scraping
 - [ ] Create entry point for Gallup data
 
+<hr>
+
 ### Wellness database
 
 Data for the wellness wheel:
