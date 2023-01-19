@@ -261,7 +261,7 @@ benchmark <-rbind(ilo,benchmark)
 #--------------------------------
 
 # Download available indicator list
-gho_dims <- as.data.frame(fromJSON("https://ghoapi.azureedge.net/api/Indicator"))
+gho_dims <- as.data.frame(fromJSON("http://ghoapi.azureedge.net/api/Indicator"))
 
 gho.cleaner <- function(df) {
   df <- df %>%
