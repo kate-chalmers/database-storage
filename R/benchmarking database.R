@@ -228,11 +228,11 @@ lprod <- get_ilostat(id = "GDP_211P_NOC_NB_A", segment = 'indicator')
 lprod<-lprod[,-2]
 names(lprod)[c(1:4)] <-c("iso3c","indicator_code","year","VALUE")
 
-# Total unemployment % labor force (15-64)
-unemp <- get_ilostat(id = "SDG_0852_SEX_AGE_RT_A", segment = 'indicator', filters=list(sex="T",classif1="AGE_YTHADULT_Y15-64"))
-unemp<-unemp[,-c(2:5,8:11)]
-names(unemp)[c(1:3)] <-c("iso3c","year","VALUE")
-unemp$indicator_code <- "ILO.UNEMP.15"
+# # Total unemployment % labor force (15-64)
+# unemp <- get_ilostat(id = "SDG_0852_SEX_AGE_RT_A", segment = 'indicator', filters=list(sex="T",classif1="AGE_YTHADULT_Y15-64"))
+# unemp<-unemp[,-c(2:5,8:11)]
+# names(unemp)[c(1:3)] <-c("iso3c","year","VALUE")
+# unemp$indicator_code <- "ILO.UNEMP.15"
 
 # --- Labor force participation ---
 # !!!!! Check this one !!!!!!!
