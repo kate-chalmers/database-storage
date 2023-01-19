@@ -250,7 +250,7 @@ names(lprod)[c(1:4)] <-c("iso3c","indicator_code","year","VALUE")
 # names(female)[c(1:3)] <-c("iso3c","year","VALUE")
 # female$indicator_code <- "UIS.TLF.CACT.FE.ZS"
 
-ilo <- rbind(unemp, lprod)
+ilo <- rbind(lprod)
 
 # ilo <- rbind(partic,unemp, lprod, female)
 ilo$source <- "ILO"
