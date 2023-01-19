@@ -236,21 +236,23 @@ unemp$indicator_code <- "ILO.UNEMP.15"
 
 # --- Labor force participation ---
 # !!!!! Check this one !!!!!!!
-lpartic <- get_ilostat(id = "EAP_2WAP_SEX_AGE_RT_A", filters = list(classif1 = 'AGE_YTHADULT_YGE15'),segment = 'indicator')
+# lpartic <- get_ilostat(id = "EAP_2WAP_SEX_AGE_RT_A", filters = list(classif1 = 'AGE_YTHADULT_YGE15'),segment = 'indicator')
+#
+# # Total labor force participation
+# partic <- lpartic[lpartic$sex %in% "SEX_T",]
+# partic<-partic[,-c(2:5,8)]
+# names(partic)[c(1:3)] <-c("iso3c","year","VALUE")
+# partic$indicator_code <- "ILO.LF"
+#
+# # Female labor force participation
+# female <- lpartic[lpartic$sex %in% "SEX_F",]
+# female<-female[,-c(2:5,8)]
+# names(female)[c(1:3)] <-c("iso3c","year","VALUE")
+# female$indicator_code <- "UIS.TLF.CACT.FE.ZS"
 
-# Total labor force participation
-partic <- lpartic[lpartic$sex %in% "SEX_T",]
-partic<-partic[,-c(2:5,8)]
-names(partic)[c(1:3)] <-c("iso3c","year","VALUE")
-partic$indicator_code <- "ILO.LF"
+ilo <- rbind(unemp, lprod)
 
-# Female labor force participation
-female <- lpartic[lpartic$sex %in% "SEX_F",]
-female<-female[,-c(2:5,8)]
-names(female)[c(1:3)] <-c("iso3c","year","VALUE")
-female$indicator_code <- "UIS.TLF.CACT.FE.ZS"
-
-ilo <- rbind(partic,unemp, lprod, female)
+# ilo <- rbind(partic,unemp, lprod, female)
 ilo$source <- "ILO"
 
 benchmark <-rbind(ilo,benchmark)
@@ -261,7 +263,7 @@ benchmark <-rbind(ilo,benchmark)
 #--------------------------------
 
 # Download available indicator list
-gho_dims <- as.data.frame(fromJSON("http://ghoapi.azureedge.net/api/Indicator"))
+gho_dims <- as.data.frame(fromJSON("https://ghoapi.azureedge.net/api/Indicator"))
 
 gho.cleaner <- function(df) {
   df <- df %>%
