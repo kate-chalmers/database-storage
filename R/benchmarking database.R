@@ -219,15 +219,15 @@ benchmark <- rbind(benchmark, unesco)
 # ILO datasets
 # Notes: Using built-in R library that parses the HTML, link to CRAN
 #--------------------------------
-
+#
 # Search database for indicators
-toc <- get_ilostat_toc()
-
-# Labour prod. per worker
-lprod <- get_ilostat(id = "GDP_211P_NOC_NB_A", segment = 'indicator')
-lprod<-lprod[,-2]
-names(lprod)[c(1:4)] <-c("iso3c","indicator_code","year","VALUE")
-
+# toc <- get_ilostat_toc()
+#
+# # Labour prod. per worker
+# lprod <- get_ilostat(id = "GDP_211P_NOC_NB_A", segment = 'indicator')
+# lprod<-lprod[,-2]
+# names(lprod)[c(1:4)] <-c("iso3c","indicator_code","year","VALUE")
+#
 # # Total unemployment % labor force (15-64)
 # unemp <- get_ilostat(id = "SDG_0852_SEX_AGE_RT_A", segment = 'indicator', filters=list(sex="T",classif1="AGE_YTHADULT_Y15-64"))
 # unemp<-unemp[,-c(2:5,8:11)]
@@ -249,13 +249,13 @@ names(lprod)[c(1:4)] <-c("iso3c","indicator_code","year","VALUE")
 # female<-female[,-c(2:5,8)]
 # names(female)[c(1:3)] <-c("iso3c","year","VALUE")
 # female$indicator_code <- "UIS.TLF.CACT.FE.ZS"
-
-ilo <- rbind(lprod)
-
+#
+# ilo <- rbind(lprod)
+#
 # ilo <- rbind(partic,unemp, lprod, female)
-ilo$source <- "ILO"
-
-benchmark <-rbind(ilo,benchmark)
+# ilo$source <- "ILO"
+#
+# benchmark <-rbind(ilo,benchmark)
 
 #--------------------------------
 # WHO indicators
