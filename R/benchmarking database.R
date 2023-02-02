@@ -37,7 +37,7 @@ wdi.vars <- WDI(indicator = c("SL.AGR.EMPL.ZS", "SL.IND.EMPL.ZS", "SL.SRV.EMPL.Z
                               "GC.DOD.TOTL.GD.ZS", "DT.TDS.DECT.EX.ZS", "NE.TRD.GNFS.ZS", "NE.EXP.GNFS.ZS",
                               "TX.VAL.TECH.MF.ZS", "BN.CAB.XOKA.GD.ZS", "NE.GDI.FTOT.ZS", "BX.KLT.DINV.WD.GD.ZS",
                               "BM.KLT.DINV.WD.GD.ZS", "NY.GDS.TOTL.ZS", "IQ.CPA.IRAI.XQ", "SL.EMP.VULN.ZS", "DT.ODA.ODAT.GN.ZS",
-                              "GB.XPD.RSDV.GD.ZS", "AG.LND.TOTL.K2"))
+                              "GB.XPD.RSDV.GD.ZS", "AG.LND.TOTL.K2", "SL.TLF.CACT.ZS","SL.TLF.CACT.FE.ZS"))
 
 end.time1 <- Sys.time()
 time.taken.wdi <- end.time1 - start.time
@@ -219,43 +219,33 @@ benchmark <- rbind(benchmark, unesco)
 # ILO datasets
 # Notes: Using built-in R library that parses the HTML, link to CRAN
 #--------------------------------
-#
-# Search database for indicators
-# toc <- get_ilostat_toc()
-#
-# # Labour prod. per worker
-# lprod <- get_ilostat(id = "GDP_211P_NOC_NB_A", segment = 'indicator')
-# lprod<-lprod[,-2]
-# names(lprod)[c(1:4)] <-c("iso3c","indicator_code","year","VALUE")
-#
-# # Total unemployment % labor force (15-64)
-# unemp <- get_ilostat(id = "SDG_0852_SEX_AGE_RT_A", segment = 'indicator', filters=list(sex="T",classif1="AGE_YTHADULT_Y15-64"))
-# unemp<-unemp[,-c(2:5,8:11)]
-# names(unemp)[c(1:3)] <-c("iso3c","year","VALUE")
-# unemp$indicator_code <- "ILO.UNEMP.15"
 
-# --- Labor force participation ---
-# !!!!! Check this one !!!!!!!
-# lpartic <- get_ilostat(id = "EAP_2WAP_SEX_AGE_RT_A", filters = list(classif1 = 'AGE_YTHADULT_YGE15'),segment = 'indicator')
-#
-# # Total labor force participation
-# partic <- lpartic[lpartic$sex %in% "SEX_T",]
-# partic<-partic[,-c(2:5,8)]
-# names(partic)[c(1:3)] <-c("iso3c","year","VALUE")
-# partic$indicator_code <- "ILO.LF"
-#
-# # Female labor force participation
-# female <- lpartic[lpartic$sex %in% "SEX_F",]
-# female<-female[,-c(2:5,8)]
-# names(female)[c(1:3)] <-c("iso3c","year","VALUE")
-# female$indicator_code <- "UIS.TLF.CACT.FE.ZS"
-#
-# ilo <- rbind(lprod)
-#
-# ilo <- rbind(partic,unemp, lprod, female)
-# ilo$source <- "ILO"
-#
-# benchmark <-rbind(ilo,benchmark)
+# Labour prod. per hour (prev from conference board)
+lprod_hour <- readSDMX("https://www.ilo.org/sdmx/rest/data/ILO,DF_GDP_PHRW_NOC_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
+lprod_hour <- lprod_hour %>%
+  as.data.frame() %>%
+  select(iso3c = REF_AREA, year = obsTime, VALUE = obsValue) %>%
+  mutate(indicator_code = "PROD_HOUR")
+
+# Labour prod. per worker
+lprod <- readSDMX("https://www.ilo.org/sdmx/rest/data/ILO,DF_GDP_211P_NOC_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
+lprod <- lprod %>%
+  as.data.frame() %>%
+  select(iso3c = REF_AREA, year = obsTime, VALUE = obsValue) %>%
+  mutate(indicator_code = "GDP_211P_NOC_NB")
+
+# Total unemployment % labor force (15+)
+unemp <- readSDMX("https://www.ilo.org/sdmx/rest/data/ILO,DF_UNE_2UNE_SEX_AGE_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
+unemp <- unemp %>%
+  as.data.frame() %>%
+  filter(SEX == "SEX_T" & AGE == "AGE_YTHADULT_YGE15") %>%
+  select(iso3c = REF_AREA, year = obsTime, VALUE = obsValue) %>%
+  mutate(indicator_code = "SDG_0852_SEX_AGE_RT_A")
+
+ilo <- rbind(unemp, lprod, lprod_hour)
+ilo$source <- "ILO"
+
+benchmark <-rbind(ilo,benchmark)
 
 #--------------------------------
 # WHO indicators
