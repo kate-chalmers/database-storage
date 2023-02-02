@@ -96,124 +96,124 @@ fao_tidy <- fao %>%
 
 benchmark <- rbind(benchmark, fao_tidy)
 
-#--------------------------------
-# UIS datasets
-# Source: https://apiportal.uis.unesco.org/bdds
-# Notes: No longer updating API - check above site for updated zip links
-#--------------------------------
-
-# ******** UIS Education indicators ********
-urluis<-"ftp://ftp.uis.unesco.org/BDDS/NATMON.zip"
-
-temp <- tempfile()
-download.file(urluis, temp)
-unzip(temp, "NATMON_DATA_NATIONAL.csv")
-unzip(temp, "NATMON_LABEL.csv")
-uis <- read.csv("NATMON_DATA_NATIONAL.csv")
-# Code labels FOUND HERE
-uis.label <- read.csv("NATMON_LABEL.csv")
-unlink(temp)
-
-# Govt exp on educ
-educexp <- uis[uis$INDICATOR_ID %in% "XGDP.FSGOV" ,]
-educexp<-educexp %>% select(COUNTRY_ID, YEAR, VALUE)
-names(educexp)[1:3] <-c("iso3c","year","VALUE")
-educexp$indicator_code <- "uis.XPD.TOTL.GD.ZS"
-
-# Primary enroll (net)
-netprim <- uis[uis$INDICATOR_ID %in% "NERT.1.CP" ,]
-netprim<-netprim %>% select(COUNTRY_ID, YEAR, VALUE)
-names(netprim)[1:3] <-c("iso3c","year","VALUE")
-netprim$indicator_code <- "uis.PRM.NENR"
-
-# Secondary enroll (gross)
-grosecond <- uis[uis$INDICATOR_ID %in% "GER.2T3" ,]
-grosecond<-grosecond %>% select(COUNTRY_ID, YEAR, VALUE)
-names(grosecond)[1:3] <-c("iso3c","year","VALUE")
-grosecond$indicator_code <- "uis.SEC.NENR"
-
-# Enrollment ratio (GPI)
-enrolld <- uis[uis$INDICATOR_ID %in% "GER.1T3.GPI" ,]
-enrolld<-enrolld %>% select(COUNTRY_ID, YEAR, VALUE)
-names(enrolld)[1:3] <-c("iso3c","year","VALUE")
-enrolld$indicator_code <- "UIS.ENR.PRSC.FM.ZS"
-
-# Mean schooling
-avgschool <- uis[uis$INDICATOR_ID %in% "MYS.1T8.AG25T99" ,]
-avgschool<-avgschool %>% select(COUNTRY_ID, YEAR, VALUE)
-names(avgschool)[1:3] <-c("iso3c","year","VALUE")
-avgschool$indicator_code <- "uis.SCHOOLING"
-
-uisnm <-rbind(educexp,netprim,grosecond,avgschool, enrolld)
-rm(educexp,netprim,grosecond,avgschool, enrolld)
-
-# ******** UIS SDG education indicators ********
-urlsdg <-"ftp://ftp.uis.unesco.org/BDDS/SDG.zip"
-
-temp<- tempfile()
-download.file(urlsdg, temp)
-unzip(temp, "SDG_DATA_NATIONAL.csv")
-unzip(temp, "SDG_LABEL.csv")
-sdg <- read.csv("SDG_DATA_NATIONAL.csv")
-sdg.label <- read.csv("SDG_LABEL.csv")
-unlink(temp)
-
-# Percentage of qualified teachers in primary education, both sexes (%)
-qual.teach.p <- sdg[sdg$INDICATOR_ID %in% "QUTP.1" ,]
-qual.teach.p<-qual.teach.p %>% select(COUNTRY_ID, YEAR, VALUE)
-names(qual.teach.p)[1:3] <-c("iso3c","year","VALUE")
-qual.teach.p$indicator_code <- "uis.PRM.TCAQ.ZS"
-
-# Percentage of qualified teachers in secondary education, both sexes (%)
-qual.teach.s <- sdg[sdg$INDICATOR_ID %in% "QUTP.2T3" ,]
-qual.teach.s<-qual.teach.s %>% select(COUNTRY_ID, YEAR, VALUE)
-names(qual.teach.s)[1:3] <-c("iso3c","year","VALUE")
-qual.teach.s$indicator_code <- "uis.SEC.TCAQ.ZS"
-
-# Pre primary enrollment
-preprim <- sdg[sdg$INDICATOR_ID %in% "GER.02" ,]
-preprim<-preprim %>% select(COUNTRY_ID, YEAR, VALUE)
-names(preprim)[1:3] <-c("iso3c","year","VALUE")
-preprim$indicator_code <- "uis.PRE.ENRR"
-
-# Primary completion
-complet <- sdg[sdg$INDICATOR_ID %in% "CR.1" ,]
-complet<-complet %>% select(COUNTRY_ID, YEAR, VALUE)
-names(complet)[1:3] <-c("iso3c","year","VALUE")
-complet$indicator_code <- "uis.COMPLRATE.PRIMARY"
-
-# Pupil (qualified) teacher ratio
-tratio <- sdg[sdg$INDICATOR_ID %in% "PTRHC.1.QUALIFIED" ,]
-tratio<-tratio %>% select(COUNTRY_ID, YEAR, VALUE)
-names(tratio)[1:3] <-c("iso3c","year","VALUE")
-tratio$indicator_code <- "uis.PRM.ENRL.TC.ZS"
-
-# Math proficiency
-math <- sdg[sdg$INDICATOR_ID %in% "MATH.PRIMARY" ,]
-math<-math %>% select(COUNTRY_ID, YEAR, VALUE)
-names(math)[1:3] <-c("iso3c","year","VALUE")
-math$indicator_code <- "uis_math"
-
-# Reading proficiency
-read <- sdg[sdg$INDICATOR_ID %in% "READ.PRIMARY" ,]
-read<-read %>% select(COUNTRY_ID, YEAR, VALUE)
-names(read)[1:3] <-c("iso3c","year","VALUE")
-read$indicator_code <- "uis_reading"
-
-# Literacy rate
-lit <- sdg[sdg$INDICATOR_ID %in% "LR.AG15T99" ,]
-lit<-lit %>% select(COUNTRY_ID, YEAR, VALUE)
-names(lit)[1:3] <-c("iso3c","year","VALUE")
-lit$indicator_code <- "uis.ADT.LITR.ZS"
-
-sdg.tot <- rbind(math,read,lit,tratio,complet,preprim,qual.teach.s,qual.teach.p)
-rm(math,read,lit,tratio,complet,preprim,qual.teach.s,qual.teach.p)
-
-unesco<-rbind(uisnm,sdg.tot)
-
-unesco$source <- "UIS"
-
-benchmark <- rbind(benchmark, unesco)
+# #--------------------------------
+# # UIS datasets
+# # Source: https://apiportal.uis.unesco.org/bdds
+# # Notes: No longer updating API - check above site for updated zip links
+# #--------------------------------
+#
+# # ******** UIS Education indicators ********
+# urluis<-"ftp://ftp.uis.unesco.org/BDDS/NATMON.zip"
+#
+# temp <- tempfile()
+# download.file(urluis, temp)
+# unzip(temp, "NATMON_DATA_NATIONAL.csv")
+# unzip(temp, "NATMON_LABEL.csv")
+# uis <- read.csv("NATMON_DATA_NATIONAL.csv")
+# # Code labels FOUND HERE
+# uis.label <- read.csv("NATMON_LABEL.csv")
+# unlink(temp)
+#
+# # Govt exp on educ
+# educexp <- uis[uis$INDICATOR_ID %in% "XGDP.FSGOV" ,]
+# educexp<-educexp %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(educexp)[1:3] <-c("iso3c","year","VALUE")
+# educexp$indicator_code <- "uis.XPD.TOTL.GD.ZS"
+#
+# # Primary enroll (net)
+# netprim <- uis[uis$INDICATOR_ID %in% "NERT.1.CP" ,]
+# netprim<-netprim %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(netprim)[1:3] <-c("iso3c","year","VALUE")
+# netprim$indicator_code <- "uis.PRM.NENR"
+#
+# # Secondary enroll (gross)
+# grosecond <- uis[uis$INDICATOR_ID %in% "GER.2T3" ,]
+# grosecond<-grosecond %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(grosecond)[1:3] <-c("iso3c","year","VALUE")
+# grosecond$indicator_code <- "uis.SEC.NENR"
+#
+# # Enrollment ratio (GPI)
+# enrolld <- uis[uis$INDICATOR_ID %in% "GER.1T3.GPI" ,]
+# enrolld<-enrolld %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(enrolld)[1:3] <-c("iso3c","year","VALUE")
+# enrolld$indicator_code <- "UIS.ENR.PRSC.FM.ZS"
+#
+# # Mean schooling
+# avgschool <- uis[uis$INDICATOR_ID %in% "MYS.1T8.AG25T99" ,]
+# avgschool<-avgschool %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(avgschool)[1:3] <-c("iso3c","year","VALUE")
+# avgschool$indicator_code <- "uis.SCHOOLING"
+#
+# uisnm <-rbind(educexp,netprim,grosecond,avgschool, enrolld)
+# rm(educexp,netprim,grosecond,avgschool, enrolld)
+#
+# # ******** UIS SDG education indicators ********
+# urlsdg <-"ftp://ftp.uis.unesco.org/BDDS/SDG.zip"
+#
+# temp<- tempfile()
+# download.file(urlsdg, temp)
+# unzip(temp, "SDG_DATA_NATIONAL.csv")
+# unzip(temp, "SDG_LABEL.csv")
+# sdg <- read.csv("SDG_DATA_NATIONAL.csv")
+# sdg.label <- read.csv("SDG_LABEL.csv")
+# unlink(temp)
+#
+# # Percentage of qualified teachers in primary education, both sexes (%)
+# qual.teach.p <- sdg[sdg$INDICATOR_ID %in% "QUTP.1" ,]
+# qual.teach.p<-qual.teach.p %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(qual.teach.p)[1:3] <-c("iso3c","year","VALUE")
+# qual.teach.p$indicator_code <- "uis.PRM.TCAQ.ZS"
+#
+# # Percentage of qualified teachers in secondary education, both sexes (%)
+# qual.teach.s <- sdg[sdg$INDICATOR_ID %in% "QUTP.2T3" ,]
+# qual.teach.s<-qual.teach.s %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(qual.teach.s)[1:3] <-c("iso3c","year","VALUE")
+# qual.teach.s$indicator_code <- "uis.SEC.TCAQ.ZS"
+#
+# # Pre primary enrollment
+# preprim <- sdg[sdg$INDICATOR_ID %in% "GER.02" ,]
+# preprim<-preprim %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(preprim)[1:3] <-c("iso3c","year","VALUE")
+# preprim$indicator_code <- "uis.PRE.ENRR"
+#
+# # Primary completion
+# complet <- sdg[sdg$INDICATOR_ID %in% "CR.1" ,]
+# complet<-complet %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(complet)[1:3] <-c("iso3c","year","VALUE")
+# complet$indicator_code <- "uis.COMPLRATE.PRIMARY"
+#
+# # Pupil (qualified) teacher ratio
+# tratio <- sdg[sdg$INDICATOR_ID %in% "PTRHC.1.QUALIFIED" ,]
+# tratio<-tratio %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(tratio)[1:3] <-c("iso3c","year","VALUE")
+# tratio$indicator_code <- "uis.PRM.ENRL.TC.ZS"
+#
+# # Math proficiency
+# math <- sdg[sdg$INDICATOR_ID %in% "MATH.PRIMARY" ,]
+# math<-math %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(math)[1:3] <-c("iso3c","year","VALUE")
+# math$indicator_code <- "uis_math"
+#
+# # Reading proficiency
+# read <- sdg[sdg$INDICATOR_ID %in% "READ.PRIMARY" ,]
+# read<-read %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(read)[1:3] <-c("iso3c","year","VALUE")
+# read$indicator_code <- "uis_reading"
+#
+# # Literacy rate
+# lit <- sdg[sdg$INDICATOR_ID %in% "LR.AG15T99" ,]
+# lit<-lit %>% select(COUNTRY_ID, YEAR, VALUE)
+# names(lit)[1:3] <-c("iso3c","year","VALUE")
+# lit$indicator_code <- "uis.ADT.LITR.ZS"
+#
+# sdg.tot <- rbind(math,read,lit,tratio,complet,preprim,qual.teach.s,qual.teach.p)
+# rm(math,read,lit,tratio,complet,preprim,qual.teach.s,qual.teach.p)
+#
+# unesco<-rbind(uisnm,sdg.tot)
+#
+# unesco$source <- "UIS"
+#
+# benchmark <- rbind(benchmark, unesco)
 
 #--------------------------------
 # ILO datasets
