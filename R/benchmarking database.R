@@ -221,21 +221,21 @@ benchmark <- rbind(benchmark, unesco)
 #--------------------------------
 
 # Labour prod. per hour (prev from conference board)
-lprod_hour <- readSDMX("https://www.ilo.org/sdmx/rest/data/ILO,DF_GDP_PHRW_NOC_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
+lprod_hour <- readSDMX("http://www.ilo.org/sdmx/rest/data/ILO,DF_GDP_PHRW_NOC_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
 lprod_hour <- lprod_hour %>%
   as.data.frame() %>%
   select(iso3c = REF_AREA, year = obsTime, VALUE = obsValue) %>%
   mutate(indicator_code = "PROD_HOUR")
 
 # Labour prod. per worker
-lprod <- readSDMX("https://www.ilo.org/sdmx/rest/data/ILO,DF_GDP_211P_NOC_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
+lprod <- readSDMX("http://www.ilo.org/sdmx/rest/data/ILO,DF_GDP_211P_NOC_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
 lprod <- lprod %>%
   as.data.frame() %>%
   select(iso3c = REF_AREA, year = obsTime, VALUE = obsValue) %>%
   mutate(indicator_code = "GDP_211P_NOC_NB")
 
 # Total unemployment % labor force (15+)
-unemp <- readSDMX("https://www.ilo.org/sdmx/rest/data/ILO,DF_UNE_2UNE_SEX_AGE_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
+unemp <- readSDMX("http://www.ilo.org/sdmx/rest/data/ILO,DF_UNE_2UNE_SEX_AGE_NB/?format=genericdata&formatVersion=2.1&startPeriod=1990-01-01&endPeriod=2023-12-31")
 unemp <- unemp %>%
   as.data.frame() %>%
   filter(SEX == "SEX_T" & AGE == "AGE_YTHADULT_YGE15") %>%
