@@ -60,41 +60,43 @@ benchmark <- wdi.vars1
 
 # !! Create temp folder and delete after !!
 
-# # Land use data
-# url.land<-"http://fenixservices.fao.org/faostat/static/bulkdownloads/Environment_LandUse_E_All_Data_(Normalized).zip"
-#
-# temp <- tempfile()
-# download.file(url.land, temp)
-# unzip(temp, "Environment_LandUse_E_All_Data_(Normalized).csv")
-# landuse <- read.csv("Environment_LandUse_E_All_Data_(Normalized).csv")
-# unlink(temp)
-#
-# # % Agricultural
-# agriland <- landuse[landuse$Item %in% "Agricultural land",]
-# agriland <- agriland %>% select(Area, Year, Value)
-# names(agriland)[1:3] <- c("iso3c","year","VALUE")
-# agriland$indicator_code <- "FAO.AGRI"
-#
-# # % Arable
-# arabland <- landuse[landuse$Item %in% "Arable land",]
-# arabland<-arabland %>% select(Area, Year, Value)
-# names(arabland)[1:3] <-c("iso3c","year","VALUE")
-# arabland$indicator_code <- "FAO.ARABLE"
-#
-# # % Forest
-# forestland <- landuse[landuse$Item %in% "Forest land",]
-# forestland<-forestland %>% select(Area, Year, Value)
-# names(forestland)[1:3] <-c("iso3c","year","VALUE")
-# forestland$indicator_code <- "FAO.FOREST"
-#
-# fao <- rbind(agriland,arabland,forestland)
-# rm(agriland,arabland,forestland)
-#
-# fao_tidy <- fao %>%
-#   mutate(iso3c = countrycode(iso3c, "country.name", "iso3c"),
-#          source = "FAO")
-#
-# benchmark <- rbind(benchmark, fao_tidy)
+# Land use data
+url.land<-"http://fenixservices.fao.org/faostat/static/bulkdownloads/Environment_LandUse_E_All_Data_(Normalized).zip"
+
+temp <- tempfile()
+download.file(url.land, temp)
+unzip(temp, "Environment_LandUse_E_All_Data_(Normalized).csv")
+landuse <- read.csv("Environment_LandUse_E_All_Data_(Normalized).csv")
+unlink(temp)
+
+# % Agricultural
+agriland <- landuse[landuse$Item %in% "Agricultural land",]
+agriland <- agriland %>% select(Area, Year, Value)
+names(agriland)[1:3] <- c("iso3c","year","VALUE")
+agriland$indicator_code <- "FAO.AGRI"
+
+# % Arable
+arabland <- landuse[landuse$Item %in% "Arable land",]
+arabland<-arabland %>% select(Area, Year, Value)
+names(arabland)[1:3] <-c("iso3c","year","VALUE")
+arabland$indicator_code <- "FAO.ARABLE"
+
+# % Forest
+forestland <- landuse[landuse$Item %in% "Forest land",]
+forestland<-forestland %>% select(Area, Year, Value)
+names(forestland)[1:3] <-c("iso3c","year","VALUE")
+forestland$indicator_code <- "FAO.FOREST"
+
+fao <- rbind(agriland,arabland,forestland)
+rm(agriland,arabland,forestland)
+
+fao_tidy <- fao %>%
+  mutate(
+    iso3c = stringr::str_conv(iso3c, "UTF-8"),
+    iso3c = countrycode(iso3c, "country.name", "iso3c"),
+    source = "FAO")
+
+benchmark <- rbind(benchmark, fao_tidy)
 
 #--------------------------------
 # UIS datasets
@@ -240,7 +242,7 @@ unemp <- unemp %>%
   as.data.frame() %>%
   filter(SEX == "SEX_T" & AGE == "AGE_YTHADULT_YGE15") %>%
   select(iso3c = REF_AREA, year = obsTime, VALUE = obsValue) %>%
-  mutate(indicator_code = "SDG_0852_SEX_AGE_RT_A")
+  mutate(indicator_code = "ILO.UNEMP.15")
 
 ilo <- rbind(unemp, lprod, lprod_hour)
 ilo$source <- "ILO"
@@ -346,10 +348,9 @@ names(envitax)[1:3] <-c("iso3c","year","VALUE")
 envitax$indicator_code <- "OECD.ENVTAX.REV"
 
 # Gender equality indicators
-gen <-get_dataset("SIGI2019")
-gen <- gen[gen$REGION=="ALL" & gen$INCOME=="AIC",]
-gen <- gen[,-c(1,3,5)]
-names(gen)[1:4] <-c("iso3c","indicator_code","year","VALUE")
+gen <-get_dataset("SIGI2019") %>%
+  filter(REGION == "ALL" & INCOME == "AIC") %>%
+  select(iso3c = LOCATION, VALUE = ObsValue, year = Time, indicator_code = VAR)
 
 gen1 <- gen[gen$indicator_code %in% "RCL__2",]
 gen2 <- gen[gen$indicator_code %in% "SIGI_2",]
@@ -371,6 +372,12 @@ pm2.avg <- pm2.avg[,c(1,8,9)]
 colnames(pm2.avg)[1:3]<-c("iso3c","year","VALUE")
 pm2.avg <- filter(pm2.avg, !(iso3c %in% c("AGO","ZWE")))
 pm2.avg$indicator_code <- "ENVI2"
+
+url3 <- "https://stats.oecd.org/restsdmx/sdmx.ashx/GetData/FFS_ARG/ARG_DT_01+ARG_DT_02+ARG_DT_04+ARG_DT_05+ARG_DT_06+ARG_DT_07+ARG_DT_09+ARG_DT_10+ARG_DT_11+ARG_DT_12+ARG_DT_14+ARG_DT_15+ARG_DT_16+ARG_DT_17+ARG_DT_18+ARG_DT_19+ARG_DT_20+ARG_DT_21+ARG_DT_22+ARG_DT_23+ARG_DT_24+ARG_DT_25+ARG_TE_01+ARG_TE_02+ARG_TE_03+ARG_TE_06+ARG_TE_07+ARG_TE_08.COAL+BITCOAL+PETROLEUM+CRUDEOIL+NGL+LPG+NONBIOGASO+AVGAS+NONBIOJETK+OTHKERO+NONBIODIES+RESFUEL+NAPHTHA+NATGAS+ELECTR.PSE+GSSE+CSE.CONSUMPTION+RETURNS+INCOME+INPUTS.EXTRACT+TRANS+REFIN+GENER+END.DT+TE.FED/all?startTime=2010&endTime=2021"
+fossil_tax <- readSDMX(url3)
+fossil_tax <- fossil_tax %>% as.data.frame()
+
+fossil_tax %>% filter(INC == "RETURNS")
 
 oecd <- rbind(gen.tot,envitax,pm2.avg)
 rm(gen.tot,envitax,pm2.avg)
@@ -557,41 +564,126 @@ benchmark <- rbind(benchmark, emdat)
 # Notes: Unable to use API
 #--------------------------------
 
-electricity <- read_excel("~/OneDrive/HLM - Key Issues Paper/Climate/IRENA_data.xlsx")
+library(RSelenium)
 
-elec.gen <- electricity %>%
-  clean_names() %>%
-  rename(country = country_area) %>%
-  group_by(country, year) %>%
-  mutate(value = sum(value, na.rm=T)) %>%
-  slice(1) %>%
-  ungroup() %>%
-  mutate(iso3c = countrycode(country, "country.name", "iso3c", custom_match=c("Kosovo*" = "XKX"))) %>%
-  select(iso3c, year, "VALUE" = value) %>%
-  mutate(indicator_code = "OECD.ELE.GEN",
-         source = "IRENA")
+rD <- rsDriver(browser = "firefox",
+               chromever = NULL,
+               port = 1048L,
+               check = TRUE,
+               verbose = TRUE,
+               extraCapabilities =list("moz:firefoxOptions" = list(args = list('--headless'))))
 
-renewelect <- electricity %>%
+remDr <- rD[["client"]]
+
+url_which <- c()
+for(yoi in 2021:2030) {
+
+  df1 <- data.frame(
+    "year" = yoi,
+    "exists" =  RCurl::url.exists(paste0("http://pxweb.irena.org/pxweb/en/IRENASTAT/IRENASTAT__Power%20Capacity%20and%20Generation/ELECGEN_", yoi,"_cycle2.px/")),
+    "url" = paste0("http://pxweb.irena.org/pxweb/en/IRENASTAT/IRENASTAT__Power%20Capacity%20and%20Generation/ELECGEN_", yoi,"_cycle2.px/")
+  )
+
+  df2 <- data.frame(
+    "year" = yoi,
+    "exists" =  RCurl::url.exists(paste0("http://pxweb.irena.org/pxweb/en/IRENASTAT/IRENASTAT__Power%20Capacity%20and%20Generation/ELECGEN_", yoi,"_cycle1.px/")),
+    "url" = paste0("http://pxweb.irena.org/pxweb/en/IRENASTAT/IRENASTAT__Power%20Capacity%20and%20Generation/ELECGEN_", yoi,"_cycle1.px/")
+  )
+
+
+  url_which <- rbind(url_which, df1, df2)
+
+}
+
+url <- url_which %>% filter(exists == T) %>% pull(url)
+
+# Run for off-grid
+remDr$navigate(url)
+
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl01_VariableValueSelect_VariableValueSelect_SelectAllButton")$clickElement()
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl02_VariableValueSelect_VariableValueSelect_SelectAllButton")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl03_VariableValueSelect_VariableValueSelect_ValuesListBox > option:nth-child(1)")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl04_VariableValueSelect_VariableValueSelect_SelectAllButton")$clickElement()
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_ButtonViewTable")$clickElement()
+
+# remDr$findElement(using = "css", value = "span.ui-button-text:nth-child(1)")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ctl00_ContentPlaceHolderMain_cphSettings_rblZeroOption_4")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ctl00_ContentPlaceHolderMain_CommandBar1_CommandBar1_ShortcutFileFileTypePX")$clickElement()
+
+df <- file.info(list.files("~/Downloads", full.names = T))
+irena_file <- rownames(df)[which.max(df$mtime)]
+
+dat <- as.data.frame(pxR::read.px(irena_file))
+
+# Run on-grid
+remDr$navigate(url)
+
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl01_VariableValueSelect_VariableValueSelect_SelectAllButton")$clickElement()
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl02_VariableValueSelect_VariableValueSelect_SelectAllButton")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl03_VariableValueSelect_VariableValueSelect_ValuesListBox > option:nth-child(2)")$clickElement()
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl03_VariableValueSelect_VariableValueSelect_ValuesListBox > option:nth-child(1)")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_VariableSelectorValueSelectRepeater_ctl04_VariableValueSelect_VariableValueSelect_SelectAllButton")$clickElement()
+remDr$findElement(using = "css", value = "#ctl00_ContentPlaceHolderMain_VariableSelector1_VariableSelector1_ButtonViewTable")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ctl00_ContentPlaceHolderMain_CommandBar1_CommandBar1_ShortcutFileFileTypeExcelX")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ctl00_ContentPlaceHolderMain_cphSettings_rblZeroOption_4")$clickElement()
+
+remDr$findElement(using = "css", value = "#ctl00_ctl00_ContentPlaceHolderMain_CommandBar1_CommandBar1_ShortcutFileFileTypePX")$clickElement()
+
+df <- file.info(list.files("~/Downloads", full.names = T))
+irena_file <- rownames(df)[which.max(df$mtime)]
+
+dat2 <- as.data.frame(pxR::read.px(irena_file))
+
+dat_full <- rbind(dat, dat2)
+
+renewelect <- dat %>%
   clean_names() %>%
   mutate_if(is.factor, as.character) %>%
   mutate(year = as.numeric(year),
          value = ifelse(is.na(value), 0, value),
-         value = as.numeric(value),
-         country = countrycode(country_area, "country.name", "country.name")) %>%
-  select(-country_area) %>%
-  arrange(country, year, technology) %>%
+         value = as.numeric(value)) %>%
   mutate(renewable = ifelse(technology %in% c("Fossil fuels", "Nuclear", "Other non-renewable energy", "Coal and peat",
                                               "Natural gas", "Fossil fuels n.e.s.", "Oil"), "no", "yes")) %>%
-  group_by(country, year) %>%
+  group_by(country_area, year) %>%
   mutate(tot = sum(value),
          renewable_tot = sum(value[renewable == "yes"]),
          value = (renewable_tot/tot)*100) %>%
   slice(1) %>%
   ungroup() %>%
-  mutate(iso3c = countrycode(country, "country.name", "iso3c", custom_match=c("Kosovo" = "XKX"))) %>%
-  select(iso3c, year, VALUE = value) %>%
-  mutate(indicator_code = "OECD.REN.ELE",
+  select(country_area, year, value) %>%
+  mutate(iso3c = countrycode(country_area, "country.name", "iso3c", custom_match = c("Kosovo*" = "XKX"))) %>%
+  select(-country_area) %>%
+  rename(VALUE = value) %>%
+  mutate(indicator_code = "IRENA.REN.ENEG",
          source = "IRENA")
+
+elec.gen <- dat %>%
+  clean_names() %>%
+  mutate_if(is.factor, as.character) %>%
+  mutate(year = as.numeric(year),
+         value = ifelse(is.na(value), 0, value),
+         value = as.numeric(value)) %>%
+  group_by(country_area, year) %>%
+  mutate(tot = sum(value, na.rm=T)) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(country_area, year, value) %>%
+  mutate(iso3c = countrycode(country_area, "country.name", "iso3c", custom_match = c("Kosovo*" = "XKX"))) %>%
+  select(-country_area) %>%
+  rename(VALUE = value) %>%
+  mutate(indicator_code = "IRENA.ELE.GEN",
+         source = "IRENA")
+
+benchmark <- rbind(benchmark, elec.gen, renewelect)
+
 
 # Pisa Math scores
 pisa.math <- read_excel("./oecd data/PISA_maths.xlsx")
@@ -641,26 +733,31 @@ munic.waste <- munic.waste[,c(1,6,7)]
 colnames(munic.waste)[1:3]<-c("iso3c","year","VALUE")
 munic.waste$indicator_code<-"OECD.WASTEPOP"
 
-oecd.excel <- rbind(munic.waste,mat.prod,renewpct,pisa.sci, pisa.read,pisa.math)
-rm(munic.waste,mat.prod,renewpct,pisa.sci, pisa.read,pisa.math)
+oecd.excel <- rbind(munic.waste,mat.prod, pisa.sci, pisa.read,pisa.math,renewpct)
+
+oecd.excel
 
 oecd.excel$source <- "OECD"
 
-non.auto <- rbind(gallup, oecd.excel, emdat, renewelect, elec.gen)
+non.auto <- rbind(gallup, oecd.excel, emdat)
 
 benchmark <- rbind(oecd.excel,benchmark)
+
+rm(munic.waste,mat.prod,renewelect,pisa.sci, pisa.read,pisa.math)
+
+benchmark_fin <- benchmark
 
 # ------------------------------- Cleaning and organizing -------------------------------
 
 end.time2 <- Sys.time()
 time.taken.tot <- end.time2 - start.time
 
-bench.code <- unique(benchmark$indicator_code)
+bench.code <- unique(benchmark_fin$indicator_code)
 
 bench.indicators <- data.frame()
 
 for (var in bench.code){
-  dat <- benchmark %>%
+  dat <- benchmark_fin %>%
     filter(indicator_code==var) %>%
     mutate(year=as.numeric(year)) %>%
     mutate(min.year=min(year)) %>%
@@ -676,11 +773,11 @@ for (var in bench.code){
   bench.indicators<-rbind(bench.indicators, dat)
 }
 
-indic.list <- read_excel("./data/Indicator list.xlsx", sheet = "Information sheet")
+indic.list <- read_excel("./data/Indicator list.xlsx", sheet = "bench_idx_clean")
 
-indic.list<-merge(indic.list, bench.indicators, by.x="Indicator code", by.y = "indicator_code", all=T)
+indic.list<-merge(indic.list, bench.indicators, by="indicator_code", all=T)
 
-indic.list$`Automated?` <- ifelse(indic.list$`Indicator code` %in% unique(non.auto$indicator_code), "no", "yes")
+# indic.list$`Automated?` <- ifelse(indic.list$`Indicator code` %in% unique(non.auto$indicator_code), "no", "yes")
 
 missings <- indic.list %>%
   filter(is.na(`Observation period`))
@@ -691,16 +788,15 @@ paste("WDI download took", round(time.taken.wdi, digits=2), "minutes to complete
 
 # Review countries listed/check for missing ones
 
-benchmark <- benchmark %>%
+benchmark <- benchmark_fin %>%
   mutate(country = countrycode(iso3c, "iso3c", "country.name")) %>%
   drop_na() %>%
   select(-country)
 
 # write.xlsx(benchmark, "0_benchmark_db_v2.xlsx")
-write.csv(benchmark, "0_benchmark_db_v2.csv")
+write.csv(benchmark_fin, "0_benchmark_db_v2.csv")
 
-meta.data <- data.frame("Time" = c(time.taken.tot, rep(0, 17)),
-                        "Non-automated" = unique(non.auto$indicator_code))
+meta.data <- data.frame("Time" = c(time.taken.tot, rep(0, 17)))
 
 write.csv(meta.data, "0_benchmark_meta_v2.csv")
 
